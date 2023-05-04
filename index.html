@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vacuum Pump Calculator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function calculatePumpingSpeed() {
+            // Get user input
+            var inletDiameter = parseFloat(document.getElementById("inletDiameter").value);
+            var pumpSpeed = parseFloat(document.getElementById("pumpSpeed").value);
+            var pressure = parseFloat(document.getElementById("pressure").value);
+            var inletUnit = document.getElementById("inletUnit").value;
+            var pumpSpeedUnit = document.getElementById("pumpSpeedUnit").value;
+            var pressureUnit = document.getElementById("pressureUnit").value;
+            var pumpingSpeedUnit = document.getElementById("pumpingSpeedUnit").value;
+            var throughputUnit = document.getElementById("throughputUnit").value;
+
+            // Convert units to meters
+            if (inletUnit === "cm") {
+                inletDiameter = inletDiameter / 100;
+            }
+            else if (inletUnit === "mm") {
+                inletDiameter = inletDiameter / 1000;
+            }
+            else if (inletUnit === "in") {
+                inletDiameter = inletDiameter / 39.37;
+            }
+
+            //convert units to m/s
+            if (pumpSpeedUnit === "cm/s") {
+                pumpSpeed = pumpSpeed / 100;
+            }
+
+            //convert units to Pa 
+            if (pressureUnit === "torr") {
+                pressure = pressure / 133.322;
+            }
+            else if (pressureUnit === "bar") {
+                pressure = pressure / 100000;
+            }
+            else if (pressureUnit === "cm Hg") {
+                pressure = pressure / 1333.22;
+            }
+            else if (pressureUnit === "atm") {
+                pressure = pressure / 101325;
+            }
+
+            // Calculate pumping speed
+            var pumpingSpeed = (Math.PI / 4) * (inletDiameter ** 2) * pumpSpeed;
+
+            // Calculate throughput
+            var throughput = pumpingSpeed * pressure;
+            
+            // Calculated pumping speed is in m^3/s
+            //convert units to user's choice of pumping speed
+            if (pumpingSpeedUnit === "m^3/h") {
+                pumpingSpeed = pumpingSpeed * 3600;
+            }
+            else if (pumpingSpeedUnit === "cm^3/s") {
+                pumpingSpeed = pumpingSpeed * 1000000;
+            }
+            else if (pumpingSpeedUnit === "l/s") {
+                pumpingSpeed = pumpingSpeed * 1000;
+            }
+            else if (pumpingSpeedUnit === "cfm") {
+                pumpingSpeed = pumpingSpeed * 2118.88;
+            }
+
+            // Calculated throughput is in Pa.m^3/s
+            //convert units to user's choice of throughput
+            if (throughputUnit === "mbar.l/s") {
+                throughput = throughput / 100;
+            }
+            
+
+            // Display results
+            document.getElementById("pumpingSpeed").innerHTML = "Pumping Speed: " + pumpingSpeed.toFixed(8) + " " + pumpingSpeedUnit;
+            document.getElementById("throughput").innerHTML = "Throughput: " + throughput.toFixed(8) + " " + throughputUnit;
+        }
+    </script>
+</head>
+<body>
+    <style>
+        body
+        {
+            background-color: blanchedalmond;
+        }
+        .form-control
+        {
+            background-color:bisque;
+            opacity: 75%;
+        }
+    </style>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Vacuum Pump Calculator</h1>
+        <b class="mt-4">Input Parameters:</b>
+        <div class="form-row mt-2">
+
+            <div class="form-group col-md-3">
+                <label for="inletDiameter">Inlet Diameter:</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="inletDiameter" step="0.01">
+                    <select class="form-control" id="inletUnit">
+                        <option value="m">m</option>
+                        <option value="mm">mm</option>
+                        <option value="cm">cm</option>
+                        <option value="in">in</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group col-md-4">
+                <label for="pumpSpeed">Velocity of flow of gas through the inlet:</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="pumpSpeed">
+                    <select class="form-control" id="pumpSpeedUnit">
+                        <option value="m/s">m/s</option>
+                        <option value="cm/s">cm/s</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="pressure">Pressure at inlet:</label>
+                <div class="input-group">
+                    <input type="number" class="form-control" id="pressure">
+                    <select class="form-control" id="pressureUnit">
+                        <option value="torr">torr</option>
+                        <option value="bar">bar</option>
+                        <option value="cm Hg">cm Hg</option>
+                        <option value="atm">atm</option>
+                        <option value="Pa">Pa</option>
+                    </select>
+                </div>
+            </div>
+            
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label for="inletDiameter"><b>Display Parameters:</b></label>
+            </div>
+            
+            <div class="form-group col-md-4">
+                <label for="pumpingSpeed">Pumping Speed Unit:</label>
+                <div class="input-group">
+                    <select class="form-control" id="pumpingSpeedUnit">
+                        <option value="m^3/h">m³/hr</option>
+                        <option value="m^3/s">m³/s</option>
+                        <option value="cm^3/s">cm³/s</option>
+                        <option value="l/s">l/s</option>
+                        <option value="cfm">cfm</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group col-md-4">
+                <label for="throughput">Throughput Unit:</label>
+                <div class="input-group">
+                    <select class="form-control" id="throughputUnit">
+                        <option value="Pa.m^3/s">Pa.m³/s</option>
+                        <option value="mbar.l/s">hPa.m³/s = mbar·l/s</option>
+                    </select>
+                </div>
+            </div>
+            
+        </div>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <button type="button" class="btn btn-outline-dark mt-4" onclick="calculatePumpingSpeed()">Calculate</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <h3 id="pumpingSpeed"></h3>
+            </div>
+            <div class="col-md-6">
+                <h3 id="throughput"></h3>
+            </div>
+        </div>
+    </div>
+</body>
